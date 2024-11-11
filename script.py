@@ -60,4 +60,4 @@ async def hello(ctx):
     user_name = ctx.author.name
     await ctx.send(f"Halo, {user_name}!")
 
-bot.run('MTMwMDQ0NDQyODQ2ODQ4NjIxNQ.GoRkBb.i8mT0rCQXu4dVYmMXkGnQIvfiHQqWJ_EwlEwj8')
+bot.run('yourtoken')

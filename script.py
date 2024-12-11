@@ -1,6 +1,16 @@
 import discord
 from discord.ext import commands
 import re
+import datetime
+
+# Get the current date
+current_date = datetime.datetime.now()
+
+# Extract the year
+current_year = current_date.year
+
+# Get the last two digits of the current year as a string
+last_two_digits = str(current_year)[-2:]
 
 intents = discord.Intents.default()
 intents.guilds = True
@@ -23,16 +33,22 @@ async def create_channel(ctx, channel_name: str):
     categories = [cat for cat in ctx.guild.categories if cat.name.startswith("QUO-")]
 
     if not categories:
-        new_category = await ctx.guild.create_category(f"QUO-{channel_name.split('-')[0]}-001")
+        new_category = await ctx.guild.create_category(f"QUO-{channel_name.split('-')[0]}-001-{last_two_digits}")
         await create_channel_in_category(new_category, channel_name, ctx)
         return
 
     categories.sort(key=lambda x: int(x.name.split('-')[-1]))
     last_category = categories[-1]
 
+    # check if last category has the same last two digits as the current year
+    if last_category.name.split('-')[-1] != last_two_digits:
+        new_category = await ctx.guild.create_category(f"QUO-{channel_name.split('-')[0]}-001-{last_two_digits}")
+        await create_channel_in_category(new_category, channel_name, ctx)
+        return
+    
     if len(last_category.channels) >= 50:
         new_category_number = str(int(last_category.name.split('-')[-1]) + 1).zfill(3)
-        new_category = await ctx.guild.create_category(f"QUO-{channel_name.split('-')[0]}-{new_category_number}")
+        new_category = await ctx.guild.create_category(f"QUO-{channel_name.split('-')[0]}-{new_category_number}-{last_two_digits}")
         await create_channel_in_category(new_category, channel_name, ctx)
     else:
         await create_channel_in_category(last_category, channel_name, ctx)
@@ -60,4 +76,4 @@ async def hello(ctx):
     user_name = ctx.author.name
     await ctx.send(f"Halo, {user_name}!")
 
-bot.run('yourtoken')
+bot.run('MTMwMDQ0NDQyODQ2ODQ4NjIxNQ.Gd1LZq.-t6iRkhtMtbYZ6nqyI82rpbenPuiNeJ_qqKXG0')
